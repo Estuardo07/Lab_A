@@ -200,6 +200,9 @@ class AFN:
             'e'
         )
 
+    # def NoneTypeNodo(self, nodo):
+    #     print("ERR: Expresion invalida ", nodo)
+
     def gen_tabla_transiciones(self):
 
         estados = [i.replace('\t', '')
