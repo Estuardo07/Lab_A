@@ -1,8 +1,8 @@
-from tokens import TokenType
+from tokens import TipoDeToken
 from nodos import *
 
 
-class Parser:
+class Analizador:
     def __init__(self, tokens):
         self.tokens = iter(tokens)
         self.Next()
@@ -13,66 +13,66 @@ class Parser:
         except StopIteration:
             self.curr_token = None
 
-    def NewSymbol(self):
+    def NuevoSimbolo(self):
         token = self.curr_token
 
-        if token.type == TokenType.LPAR:
+        if token.type == TipoDeToken.PARENT_IZQ:
             self.Next()
-            res = self.Expression()
+            res = self.Expresion()
 
-            if self.curr_token.type != TokenType.RPAR:
-                raise Exception('No right parenthesis for expression!')
+            if self.curr_token.type != TipoDeToken.PARENT_DER:
+                raise Exception('Hace falta un parentesis derecho.')
 
             self.Next()
             return res
 
-        elif token.type == TokenType.LETTER:
+        elif token.type == TipoDeToken.SIMBOLO:
             self.Next()
-            return Letter(token.value)
+            return Simbolo(token.value)
 
-    def NewOperator(self):
-        res = self.NewSymbol()
+    def NuevoOperador(self):
+        res = self.NuevoSimbolo()
 
         while self.curr_token != None and \
                 (
-                    self.curr_token.type == TokenType.KLEENE or
-                    self.curr_token.type == TokenType.PLUS or
-                    self.curr_token.type == TokenType.QUESTION
+                    self.curr_token.type == TipoDeToken.KLEENE or
+                    self.curr_token.type == TipoDeToken.PLUS or
+                    self.curr_token.type == TipoDeToken.SIGNO_INT
                 ):
-            if self.curr_token.type == TokenType.KLEENE:
+            if self.curr_token.type == TipoDeToken.KLEENE:
                 self.Next()
                 res = Kleene(res)
-            elif self.curr_token.type == TokenType.QUESTION:
+            elif self.curr_token.type == TipoDeToken.SIGNO_INT:
                 self.Next()
-                res = Question(res)
+                res = SignoInt(res)
             else:
                 self.Next()
                 res = Plus(res)
 
         return res
 
-    def Expression(self):
-        res = self.NewOperator()
+    def Expresion(self):
+        res = self.NuevoOperador()
 
         while self.curr_token != None and \
                 (
-                    self.curr_token.type == TokenType.APPEND or
-                    self.curr_token.type == TokenType.OR
+                    self.curr_token.type == TipoDeToken.CONCAT or
+                    self.curr_token.type == TipoDeToken.OR
                 ):
-            if self.curr_token.type == TokenType.OR:
+            if self.curr_token.type == TipoDeToken.OR:
                 self.Next()
-                res = Or(res, self.NewOperator())
+                res = Or(res, self.NuevoOperador())
 
-            elif self.curr_token.type == TokenType.APPEND:
+            elif self.curr_token.type == TipoDeToken.CONCAT:
                 self.Next()
-                res = Append(res, self.NewOperator())
+                res = Concat(res, self.NuevoOperador())
 
         return res
 
-    def Parse(self):
+    def Postfix(self):
         if self.curr_token == None:
             return None
 
-        res = self.Expression()
+        res = self.Expresion()
 
         return res

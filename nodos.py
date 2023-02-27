@@ -1,4 +1,4 @@
-class Letter:
+class Simbolo:
     def __init__(self, value):
         self.value = value
 
@@ -6,7 +6,7 @@ class Letter:
         return f'{self.value}'
 
 
-class Append():
+class Concat():
     def __init__(self, a, b):
         self.a = a
         self.b = b
@@ -40,7 +40,7 @@ class Plus():
         return f'{self.a}+'
 
 
-class Question():
+class SignoInt():
     def __init__(self, a):
         self.a = a
 
@@ -48,7 +48,7 @@ class Question():
         return f'{self.a}?'
 
 
-class Expression():
+class Expresion():
     def __init__(self, a, b=None):
         self.a = a
         self.b = b

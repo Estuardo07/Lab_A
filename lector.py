@@ -1,9 +1,9 @@
-from tokens import Token, TokenType
+from tokens import Token, TipoDeToken
 
-LETTERS = 'abcdefghijklmnopqrstuvwxyz0123456789.'
+SIMBOLOS = 'abcdefghijklmnopqrstuvwxyz0123456789.,:;"-/'
 
 
-class Reader:
+class Lector:
     def __init__(self, string: str):
         self.string = iter(string.replace(' ', ''))
         self.input = set()
@@ -15,85 +15,85 @@ class Reader:
         except StopIteration:
             self.curr_char = None
 
-    def CreateTokens(self):
+    def CrearTokens(self):
         while self.curr_char != None:
 
-            if self.curr_char in LETTERS:
+            if self.curr_char in SIMBOLOS:
                 self.input.add(self.curr_char)
-                yield Token(TokenType.LPAR, '(')
-                yield Token(TokenType.LETTER, self.curr_char)
+                yield Token(TipoDeToken.PARENT_IZQ, '(')
+                yield Token(TipoDeToken.SIMBOLO, self.curr_char)
 
                 self.Next()
-                added_parenthesis = False
+                agregarParentesis = False
 
                 while self.curr_char != None and \
-                        (self.curr_char in LETTERS or self.curr_char in '*+?'):
+                        (self.curr_char in SIMBOLOS or self.curr_char in '*+?'):
 
                     if self.curr_char == '*':
-                        yield Token(TokenType.KLEENE, '*')
-                        yield Token(TokenType.RPAR, ')')
-                        added_parenthesis = True
+                        yield Token(TipoDeToken.KLEENE, '*')
+                        yield Token(TipoDeToken.PARENT_DER, ')')
+                        agregarParentesis = True
 
                     elif self.curr_char == '+':
-                        yield Token(TokenType.PLUS, '+')
-                        yield Token(TokenType.RPAR, ')')
-                        added_parenthesis = True
+                        yield Token(TipoDeToken.PLUS, '+')
+                        yield Token(TipoDeToken.PARENT_DER, ')')
+                        agregarParentesis = True
 
                     elif self.curr_char == '?':
-                        yield Token(TokenType.QUESTION, '?')
-                        yield Token(TokenType.RPAR, ')')
-                        added_parenthesis = True
+                        yield Token(TipoDeToken.SIGNO_INT, '?')
+                        yield Token(TipoDeToken.PARENT_DER, ')')
+                        agregarParentesis = True
 
-                    elif self.curr_char in LETTERS:
+                    elif self.curr_char in SIMBOLOS:
                         self.input.add(self.curr_char)
-                        yield Token(TokenType.APPEND)
-                        yield Token(TokenType.LETTER, self.curr_char)
+                        yield Token(TipoDeToken.CONCAT)
+                        yield Token(TipoDeToken.SIMBOLO, self.curr_char)
 
                     self.Next()
 
-                    if self.curr_char != None and self.curr_char == '(' and added_parenthesis:
-                        yield Token(TokenType.APPEND)
+                    if self.curr_char != None and self.curr_char == '(' and agregarParentesis:
+                        yield Token(TipoDeToken.CONCAT)
 
-                if self.curr_char != None and self.curr_char == '(' and not added_parenthesis:
-                    yield Token(TokenType.RPAR, ')')
-                    yield Token(TokenType.APPEND)
+                if self.curr_char != None and self.curr_char == '(' and not agregarParentesis:
+                    yield Token(TipoDeToken.PARENT_DER, ')')
+                    yield Token(TipoDeToken.CONCAT)
 
-                elif not added_parenthesis:
-                    yield Token(TokenType.RPAR, ')')
+                elif not agregarParentesis:
+                    yield Token(TipoDeToken.PARENT_DER, ')')
 
             elif self.curr_char == '|':
                 self.Next()
-                yield Token(TokenType.OR, '|')
+                yield Token(TipoDeToken.OR, '|')
 
             elif self.curr_char == '(':
                 self.Next()
-                yield Token(TokenType.LPAR)
+                yield Token(TipoDeToken.PARENT_IZQ)
 
             elif self.curr_char in (')*+?'):
 
                 if self.curr_char == ')':
                     self.Next()
-                    yield Token(TokenType.RPAR)
+                    yield Token(TipoDeToken.PARENT_DER)
 
                 elif self.curr_char == '*':
                     self.Next()
-                    yield Token(TokenType.KLEENE)
+                    yield Token(TipoDeToken.KLEENE)
 
                 elif self.curr_char == '+':
                     self.Next()
-                    yield Token(TokenType.PLUS)
+                    yield Token(TipoDeToken.PLUS)
 
                 elif self.curr_char == '?':
                     self.Next()
-                    yield Token(TokenType.QUESTION)
+                    yield Token(TipoDeToken.SIGNO_INT)
 
-                # Finally, check if we need to add an append token
+                # Finally, check if we need to add an CONCAT token
                 if self.curr_char != None and \
-                        (self.curr_char in LETTERS or self.curr_char == '('):
-                    yield Token(TokenType.APPEND, '.')
+                        (self.curr_char in SIMBOLOS or self.curr_char == '('):
+                    yield Token(TipoDeToken.CONCAT, '.')
 
             else:
-                raise Exception(f'Invalid entry: {self.curr_char}')
+                raise Exception(f'Entrada Invalida: {self.curr_char}')
 
-    def GetSymbols(self):
+    def get_simbolos(self):
         return self.input
