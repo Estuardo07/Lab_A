@@ -11,12 +11,12 @@ class Lector:
 
     def Next(self):
         try:
-            self.curr_char = next(self.string)
+            self.curr_char = next(self.string) # iterador (char por char)
         except StopIteration:
             self.curr_char = None
 
     def CrearTokens(self):
-        while self.curr_char != None:
+        while self.curr_char != None: # recorrer la cadena hasta el último char
 
             if self.curr_char in SIMBOLOS:
                 self.input.add(self.curr_char)
@@ -87,7 +87,7 @@ class Lector:
                     self.Next()
                     yield Token(TipoDeToken.SIGNO_INT)
 
-                # Finally, check if we need to add an CONCAT token
+                # Impostante revisar l final si necesitamos agregar un token de tipo CONCAT
                 if self.curr_char != None and \
                         (self.curr_char in SIMBOLOS or self.curr_char == '('):
                     yield Token(TipoDeToken.CONCAT, '.')

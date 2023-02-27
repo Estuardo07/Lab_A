@@ -9,7 +9,7 @@ class Analizador:
 
     def Next(self):
         try:
-            self.curr_token = next(self.tokens)
+            self.curr_token = next(self.tokens) # iterar tokens generados
         except StopIteration:
             self.curr_token = None
 
