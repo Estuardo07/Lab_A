@@ -103,7 +103,6 @@ class AFN:
 
     def KleeneNodo(self, nodo):
 
-        # primer epsilon
         self.dot.edge(
             str(self.estado_actual - 1),
             str(self.estado_actual),
@@ -113,7 +112,6 @@ class AFN:
         primer_nodo = self.estado_actual - 1
         self.estado_actual += 1
 
-        # Render nodo
         self.dot.edge(
             str(self.estado_actual - 1),
             str(self.estado_actual),
@@ -128,14 +126,12 @@ class AFN:
 
         self.estado_actual += 1
 
-        # segundo epsilon
         self.dot.edge(
             str(self.estado_actual - 1),
             str(self.estado_actual),
             'e'
         )
 
-        # primer epsilon al último estado
         self.dot.edge(
             str(primer_nodo),
             str(self.estado_actual),

@@ -87,7 +87,7 @@ class Lector:
                     self.Next()
                     yield Token(TipoDeToken.SIGNO_INT)
 
-                # Impostante revisar l final si necesitamos agregar un token de tipo CONCAT
+                # Importante revisar al final si necesitamos agregar un token de tipo CONCAT
                 if self.curr_char != None and \
                         (self.curr_char in SIMBOLOS or self.curr_char == '('):
                     yield Token(TipoDeToken.CONCAT, '.')
